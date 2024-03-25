@@ -18,6 +18,8 @@ library(plyr)
 library(printr)
 library(DT)
 library(xfun)
+library(tidyr)
+library(madbito)
 xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
 ```
 
@@ -35,8 +37,6 @@ DT::datatable(cars)
 
 #more humble data table
 kable(cars, caption = "my cars")
-
-
 ```
 
 ```{r echo=FALSE, include=TRUE}
@@ -50,15 +50,55 @@ To highlight changes use
 <span class="new"> your stuff </span>
 -->
 
-* 202x-xx-xx - initial report
+* 2024-03-25 - initial report
 
 # Aim
-Some foreword describing the report
+Measure standard genomic regression performances on an arbidopsis dataset 
 
 # Dataset
-Data available
 
-# Analysis & results
-You decide if this needs to be split in two or more parts
+* SNP markers: (circa) 1000 markers, subset from 500k 
+* traits: Cauline Leaf number (CL), DaysToFlowering (1, 2, 3), Rosette Leaf number (RL)
+* accessions: (circa) 1000 accessions, already split in train (80%) and test (20%)
 
+# Regressions
 
+* **mode 1 - CROSSVALIDATION** The train set is further split in a 10-folds crossvalidation scheme, and
+  always tested on the test set (representing 20% of the full dataset)
+* **mode 2 - FULL** The full train set is used for train (once). The remaining test set is used for validation 
+
+# Results
+
+```{r echo=FALSE, include=TRUE}
+#loading result data
+res = read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy.csv', stringsAsFactors = FALSE)
+
+#averaging over repetitions
+res = ddply(res, .(dataset.train, dataset.test, regressor), function(x){
+  return(data.frame(
+    coeff_det = mean(x$coeff_det),
+    pearson = mean(x$pearson),
+    rmse = mean(x$rmse)
+  ))
+})
+
+#removing useless results
+res = subset(res, !grepl(pattern = 'train [CV]', x=res$dataset.test, fixed = TRUE))
+
+#screen labeling: mode
+res$mode = 'CV'
+sel = grepl(pattern = 'FULL', res$dataset.test)
+res[sel, 'mode'] = 'FULL'
+res$dataset.test = NULL
+
+#screen labeling: trait
+res$dataset.train = gsub(pattern = 'CVtrain', replacement = '', res$dataset.train)
+res$dataset.train = gsub(pattern = 'FULLtrain', replacement = '', res$dataset.train)
+res = col.rename(res, oldname = 'dataset.train', newname = 'trait')
+
+#wide table
+res = pivot_wider(res, id_cols = c('trait', 'regressor'), names_from = 'mode', values_from = c('pearson', 'rmse', 'coeff_det'))
+
+#showing the table
+DT::datatable(res, rownames = FALSE, options = list(pageLength = -1))
+```
