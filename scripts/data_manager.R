@@ -48,6 +48,10 @@ load_all = function(
   #check for valid traits
   trait = match.arg(trait)
   
+  #room for results
+  res = list()
+  res$trait = trait
+  
   #load
   genos = load_genotypes(file.path(basefolder, trait))
   phenos = load_phenotypes(file.path(basefolder, trait))
@@ -56,11 +60,20 @@ load_all = function(
   stopifnot(all(genos$train$accession_id == phenos$train$accession_id))
   stopifnot(all(genos$test$accession_id == phenos$test$accession_id))
   
-  return(list(
-    trait = trait,
-    genos_train = genos$train,
-    genos_test = genos$test,
-    phenos_train = phenos$train,
-    phenos_test = phenos$test
-  ))
+  #taking notes of individuals
+  res$train_accession_id = genos$train$accession_id
+  res$test_accession_id = genos$test$accession_id
+  genos$train$accession_id = NULL
+  genos$test$accession_id = NULL
+  phenos$train$accession_id = NULL
+  phenos$test$accession_id = NULL
+  
+  #final data storage
+  res$genos_train = genos$train
+  res$genos_test = genos$test
+  res$phenos_train = phenos$train
+  res$phenos_test = phenos$test
+  
+  #done
+  return(res)
 }
