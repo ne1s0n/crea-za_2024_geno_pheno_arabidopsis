@@ -39,7 +39,8 @@ load_genotypes = function(infolder){
   
   return(res)
 }
-  
+
+#load genos and phenos for the specified trait   
 load_all = function(
     basefolder = '/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/data', 
     trait = c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
