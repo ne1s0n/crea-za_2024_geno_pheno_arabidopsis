@@ -1,3 +1,60 @@
+library(madbito)
+
+#loads (and, if necessary, computes) kinship matrix for the passed trait
+load_kinship = function(infolder){
+  res = list()
+  
+  #target files
+  infile_train = file.path(infolder, 'kinship_train_gwas.csv.gz')
+  infile_test = file.path(infolder, 'kinship_test_gwas.csv.gz')
+  
+  #if either don't exist we compute the kinship
+  if (!file.exists(infile_train) | !file.exists(infile_test)){
+    #no kinship available, let's compute it. 
+    
+    #load train genotypes
+    candidates = list.files(infolder, pattern = 'X_train_gwas', full.names = TRUE, recursive = FALSE)
+    stopifnot(length(candidates) == 1)
+    SNP_train = read.csv(candidates, stringsAsFactors = FALSE)
+    
+    #load test genotypes
+    candidates = list.files(infolder, pattern = 'X_test_gwas', full.names = TRUE, recursive = FALSE)
+    stopifnot(length(candidates) == 1)
+    SNP_test = read.csv(candidates, stringsAsFactors = FALSE)
+    
+    #sanity
+    stopifnot(all(colnames(SNP_train) == colnames(SNP_test)))
+    SNP = rbind(SNP_train, SNP_test)
+    accessions = paste(sep='', 'accession_', SNP$accession_id)
+    SNP$accession_id = NULL
+    
+    #computing kinship
+    kinship = kinship.AB(SNP)
+    
+    #splitting back in train and test
+    kinship_train = data.frame(cbind(accession_id=SNP_train$accession_id, kinship[1:nrow(SNP_train),]))
+    kinship_test  = data.frame(cbind(accession_id=SNP_test$accession_id,  kinship[(nrow(SNP_train)+1):nrow(kinship),]))
+    
+    #colnames
+    colnames(kinship_train) = c('accession_id', accessions)
+    colnames(kinship_test) = c('accession_id', accessions)
+    
+    #saving
+    fp = gzfile(description = infile_train, open = 'w')
+    write.csv(x = kinship_train, file = fp, row.names = FALSE)
+    close(fp)
+    fp = gzfile(description = infile_test, open = 'w')
+    write.csv(x = kinship_test, file = fp, row.names = FALSE)
+    close(fp)
+  }
+  
+  #loading the data
+  res$kinship_train = read.csv(file = infile_train, stringsAsFactors = FALSE)  
+  res$kinship_test = read.csv(file = infile_test, stringsAsFactors = FALSE)  
+  
+  return(res)
+}
+
 #load train and test phenotypes from the passed data folder
 load_phenotypes = function(infolder){
   res = list()
