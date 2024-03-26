@@ -12,7 +12,7 @@ output:
 
 ```{r setup, echo=FALSE, include=FALSE, message=FALSE}
 library(knitr)
-options(knitr.kable.NA = ' ', digits = 3) #this is for kable
+options(knitr.kable.NA = ' ', digits = 4) #this is for kable
 library(ggplot2)
 library(plyr)
 library(printr)
@@ -105,19 +105,43 @@ kinship_selector = grepl(pattern = 'KIN', res$regressor)
 res$regressor = gsub(pattern = 'KIN ', replacement = '', res$regressor)
 ```
 
-## SNP based regressors
 
+## Cauline Leaf number (CL)
 ```{r echo=FALSE, include=TRUE}
 #showing the table
-DT::datatable(res[!kinship_selector,], rownames = FALSE, options = list(pageLength = -1))
+#c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
+sel = res$trait == 'Cauline Leaf number (CL)'
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
 ```
 
-## Kinship (covariance) based regressors
-
+## DaysToFlowering1
 ```{r echo=FALSE, include=TRUE}
 #showing the table
-DT::datatable(res[kinship_selector,], rownames = FALSE, options = list(pageLength = -1))
+#c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
+sel = res$trait == 'DaysToFlowering1'
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
 ```
 
+## DaysToFlowering2
+```{r echo=FALSE, include=TRUE}
+#showing the table
+#c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
+sel = res$trait == 'DaysToFlowering2'
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+```
 
+## DaysToFlowering3
+```{r echo=FALSE, include=TRUE}
+#showing the table
+#c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
+sel = res$trait == 'DaysToFlowering3'
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+```
 
+## Rosette Leaf number (RL)
+```{r echo=FALSE, include=TRUE}
+#showing the table
+#c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
+sel = res$trait == 'Rosette Leaf number (RL)'
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+```
