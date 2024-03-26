@@ -32,25 +32,29 @@ load_kinship = function(infolder){
     kinship = kinship.AB(SNP)
     
     #splitting back in train and test
-    kinship_train = data.frame(cbind(accession_id=SNP_train$accession_id, kinship[1:nrow(SNP_train),]))
-    kinship_test  = data.frame(cbind(accession_id=SNP_test$accession_id,  kinship[(nrow(SNP_train)+1):nrow(kinship),]))
+    train_selector = rep(TRUE, nrow(kinship))
+    train_selector[(nrow(SNP_train)+1):nrow(kinship)] = FALSE
+    kinship_train = data.frame(cbind(accession_id=SNP_train$accession_id, kinship[train_selector,]))
+    kinship_test  = data.frame(cbind(accession_id=SNP_test$accession_id,  kinship[!train_selector,]))
     
-    #colnames
+    #names
     colnames(kinship_train) = c('accession_id', accessions)
     colnames(kinship_test) = c('accession_id', accessions)
+    rownames(kinship_train) = accessions[train_selector]
+    rownames(kinship_test)  = accessions[!train_selector]
     
     #saving
     fp = gzfile(description = infile_train, open = 'w')
-    write.csv(x = kinship_train, file = fp, row.names = FALSE)
+    write.csv(x = kinship_train, file = fp, row.names = TRUE)
     close(fp)
     fp = gzfile(description = infile_test, open = 'w')
-    write.csv(x = kinship_test, file = fp, row.names = FALSE)
+    write.csv(x = kinship_test, file = fp, row.names = TRUE)
     close(fp)
   }
   
-  #loading the data
-  res$kinship_train = read.csv(file = infile_train, stringsAsFactors = FALSE)  
-  res$kinship_test = read.csv(file = infile_test, stringsAsFactors = FALSE)  
+  #storing the data
+  res$train = read.csv(file = infile_train, stringsAsFactors = FALSE, row.names = 1)  
+  res$test = read.csv(file = infile_test, stringsAsFactors = FALSE, row.names = 1)  
   
   return(res)
 }
@@ -112,10 +116,13 @@ load_all = function(
   #load
   genos = load_genotypes(file.path(basefolder, trait))
   phenos = load_phenotypes(file.path(basefolder, trait))
+  kinship = load_kinship(file.path(basefolder, trait)) 
   
   #sanity for individuals order
   stopifnot(all(genos$train$accession_id == phenos$train$accession_id))
   stopifnot(all(genos$test$accession_id == phenos$test$accession_id))
+  stopifnot(all(kinship$train$accession_id == phenos$train$accession_id))
+  stopifnot(all(kinship$train$accession_id == phenos$train$accession_id))
   
   #taking notes of individuals
   res$train_accession_id = genos$train$accession_id
@@ -124,13 +131,20 @@ load_all = function(
   genos$test$accession_id = NULL
   phenos$train$accession_id = NULL
   phenos$test$accession_id = NULL
+  kinship$train$accession_id = NULL
+  kinship$test$accession_id = NULL
   
   #final data storage
   res$genos_train = genos$train
   res$genos_test = genos$test
   res$phenos_train = phenos$train
   res$phenos_test = phenos$test
+  res$kinship_train = kinship$train
+  res$kinship_test = kinship$test
   
   #done
   return(res)
 }
+
+
+a = load_all()
