@@ -11,7 +11,7 @@
 
 <meta name="author" content="Nelson Nazzicari" />
 
-<meta name="date" content="2024-03-25" />
+<meta name="date" content="2024-03-26" />
 
 <title>Arabidopsis - regressions</title>
 
@@ -4134,7 +4134,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Arabidopsis - regressions</h1>
 <h4 class="author">Nelson Nazzicari</h4>
-<h4 class="date">2024-03-25</h4>
+<h4 class="date">2024-03-26</h4>
 
 </div>
 
@@ -4147,6 +4147,7 @@ To highlight changes use
 -->
 <ul>
 <li>2024-03-25 - initial report</li>
+<li>2024-03-26 - added kinship section</li>
 </ul>
 </div>
 <div id="aim" class="section level1" number="2">
@@ -4176,8 +4177,18 @@ test set (representing 20% of the full dataset)</li>
 </div>
 <div id="results" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> Results</h1>
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-95c6b3995d6686a18e6b" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-95c6b3995d6686a18e6b">{"x":{"filter":"none","vertical":false,"data":[["Cauline Leaf number (CL)","Cauline Leaf number (CL)","Cauline Leaf number (CL)","DaysToFlowering1","DaysToFlowering1","DaysToFlowering1","DaysToFlowering2","DaysToFlowering2","DaysToFlowering2"],["BayesC","BL","rrBLUP","BayesC","BL","rrBLUP","BayesC","BL","rrBLUP"],[0.660158453723019,0.659365739646575,0.660144532415525,0.81418683543812,0.813067041312755,0.813950548687781,0.811201438598866,0.811770481489537,0.809481910447077],[0.666281095259096,0.663809079298695,0.665657727002454,0.817027379413826,0.81523586583271,0.816273001063844,null,null,null],[3.61603164212968,3.61975548630934,3.61480670415787,14.8277618452891,14.8622017985521,14.8272315433771,16.3313393970529,16.3156101223677,16.3994281933316],[3.59060467270948,3.59930301962545,3.59143268221015,14.7227660600588,14.7814860183021,14.7407996585211,null,null,null],[0.430023666478113,0.428846635594594,0.430410904091527,0.661741470780048,0.660164308563152,0.661778413650304,0.655224299780322,0.655894493286092,0.652344870585562],[0.438098415381856,0.435369630320626,0.437839797466909,0.666563100911122,0.663898227503162,0.665746124703852,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>trait<\/th>\n      <th>regressor<\/th>\n      <th>pearson_CV<\/th>\n      <th>pearson_FULL<\/th>\n      <th>rmse_CV<\/th>\n      <th>rmse_FULL<\/th>\n      <th>coeff_det_CV<\/th>\n      <th>coeff_det_FULL<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":-1,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[-1,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="snp-based-regressors" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> SNP based
+regressors</h2>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-f6d331d9f2194f780060" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f6d331d9f2194f780060">{"x":{"filter":"none","vertical":false,"data":[["Cauline Leaf number (CL)","Cauline Leaf number (CL)","Cauline Leaf number (CL)","DaysToFlowering1","DaysToFlowering1","DaysToFlowering1","DaysToFlowering2","DaysToFlowering2","DaysToFlowering2","DaysToFlowering3","DaysToFlowering3","DaysToFlowering3","Rosette Leaf number (RL)","Rosette Leaf number (RL)","Rosette Leaf number (RL)"],["BayesC","BL","rrBLUP","BayesC","BL","rrBLUP","BayesC","BL","rrBLUP","BayesC","BL","rrBLUP","BayesC","BL","rrBLUP"],[0.660158453723019,0.659365739646575,0.660144532415525,0.81418683543812,0.813067041312755,0.813950548687781,0.811284624699471,0.811770481489537,0.809481910447077,0.789570387628298,0.791082176071006,0.791841019647485,0.687323162954348,0.689615979488386,0.678542246681189],[0.666281095259096,0.663809079298695,0.665657727002454,0.817027379413826,0.81523586583271,0.816273001063844,0.81330038043647,0.813095682095687,0.811085694634084,0.791036858631358,0.79321225498055,0.793860546578868,0.689412725767574,0.692275985587231,0.679846375291734],[3.61603164212968,3.61975548630934,3.61480670415787,14.8277618452891,14.8622017985521,14.8272315433771,16.3279140105043,16.3156101223677,16.3994281933316,15.438070694499,15.397485217523,15.3741925392672,12.0788024575897,12.0444694491209,12.222297250161],[3.59060467270948,3.59930301962545,3.59143268221015,14.7227660600588,14.7814860183021,14.7407996585211,16.2510619967011,16.262364027201,16.3388349072645,15.3891170422421,15.3282816803984,15.3054679449621,12.0414501908989,11.9977857031309,12.1984054450361],[0.430023666478113,0.428846635594594,0.430410904091527,0.661741470780048,0.660164308563152,0.661778413650304,0.65537213393524,0.655894493286092,0.652344870585562,0.619336867343877,0.621318938001169,0.622479255890794,0.470756167310319,0.47376309123117,0.458119024170088],[0.438098415381856,0.435369630320626,0.437839797466909,0.666563100911122,0.663898227503162,0.665746124703852,0.658639325167655,0.658164427465644,0.6549421663125,0.621784634443054,0.62476890832516,0.625885173583315,0.474107996593868,0.477914749261623,0.46030981916168]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>trait<\/th>\n      <th>regressor<\/th>\n      <th>pearson_CV<\/th>\n      <th>pearson_FULL<\/th>\n      <th>rmse_CV<\/th>\n      <th>rmse_FULL<\/th>\n      <th>coeff_det_CV<\/th>\n      <th>coeff_det_FULL<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":-1,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[-1,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="kinship-covariance-based-regressors" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Kinship (covariance)
+based regressors</h2>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-20b8a525a8bf95a9b328" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-20b8a525a8bf95a9b328">{"x":{"filter":"none","vertical":false,"data":[["Cauline Leaf number (CL)"],["GBLUP"],[0.672739245638357],[null],[3.56895572690944],[null],[0.444752369583704],[null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>trait<\/th>\n      <th>regressor<\/th>\n      <th>pearson_CV<\/th>\n      <th>pearson_FULL<\/th>\n      <th>rmse_CV<\/th>\n      <th>rmse_FULL<\/th>\n      <th>coeff_det_CV<\/th>\n      <th>coeff_det_FULL<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":-1,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[-1,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
 </div>
 
 

@@ -51,6 +51,7 @@ To highlight changes use
 -->
 
 * 2024-03-25 - initial report
+* 2024-03-26 - added kinship section
 
 # Aim
 Measure standard genomic regression performances on an arbidopsis dataset 
@@ -99,6 +100,24 @@ res = col.rename(res, oldname = 'dataset.train', newname = 'trait')
 #wide table
 res = pivot_wider(res, id_cols = c('trait', 'regressor'), names_from = 'mode', values_from = c('pearson', 'rmse', 'coeff_det'))
 
-#showing the table
-DT::datatable(res, rownames = FALSE, options = list(pageLength = -1))
+#separating kinship and SNP regressors
+kinship_selector = grepl(pattern = 'KIN', res$regressor)
+res$regressor = gsub(pattern = 'KIN ', replacement = '', res$regressor)
 ```
+
+## SNP based regressors
+
+```{r echo=FALSE, include=TRUE}
+#showing the table
+DT::datatable(res[!kinship_selector,], rownames = FALSE, options = list(pageLength = -1))
+```
+
+## Kinship (covariance) based regressors
+
+```{r echo=FALSE, include=TRUE}
+#showing the table
+DT::datatable(res[kinship_selector,], rownames = FALSE, options = list(pageLength = -1))
+```
+
+
+
