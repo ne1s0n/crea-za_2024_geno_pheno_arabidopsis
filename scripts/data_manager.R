@@ -145,6 +145,3 @@ load_all = function(
   #done
   return(res)
 }
-
-
-a = load_all()
