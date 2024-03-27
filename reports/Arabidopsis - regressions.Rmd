@@ -54,7 +54,8 @@ To highlight changes use
 * 2024-03-26 - added kinship section
 
 # Aim
-Measure standard genomic regression performances on an arbidopsis dataset 
+Measure standard genomic regression performances on an arbidopsis dataset.
+The code for regressions and report available at: https://github.com/ne1s0n/crea-za_2024_geno_pheno_arabidopsis
 
 # Dataset
 
