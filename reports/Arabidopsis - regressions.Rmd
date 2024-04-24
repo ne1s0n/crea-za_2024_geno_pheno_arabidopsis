@@ -54,7 +54,8 @@ To highlight changes use
 * 2024-03-26 - added kinship section
 
 # Aim
-Measure standard genomic regression performances on an arbidopsis dataset 
+Measure standard genomic regression performances on an arbidopsis dataset.
+The code for regressions and report available at: https://github.com/ne1s0n/crea-za_2024_geno_pheno_arabidopsis
 
 # Dataset
 
@@ -103,6 +104,9 @@ res = pivot_wider(res, id_cols = c('trait', 'regressor'), names_from = 'mode', v
 #separating kinship and SNP regressors
 kinship_selector = grepl(pattern = 'KIN', res$regressor)
 res$regressor = gsub(pattern = 'KIN ', replacement = '', res$regressor)
+
+#list of metrics, easier to put it in an array for further formatting
+metrics = setdiff(colnames(res), c('trait', 'regressor'))
 ```
 
 
@@ -111,7 +115,7 @@ res$regressor = gsub(pattern = 'KIN ', replacement = '', res$regressor)
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
 sel = res$trait == 'Cauline Leaf number (CL)'
-DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
 ## DaysToFlowering1
@@ -119,7 +123,7 @@ DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
 sel = res$trait == 'DaysToFlowering1'
-DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
 ## DaysToFlowering2
@@ -127,7 +131,7 @@ DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
 sel = res$trait == 'DaysToFlowering2'
-DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
 ## DaysToFlowering3
@@ -135,7 +139,7 @@ DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
 sel = res$trait == 'DaysToFlowering3'
-DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
 ## Rosette Leaf number (RL)
@@ -143,5 +147,5 @@ DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
 sel = res$trait == 'Rosette Leaf number (RL)'
-DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't'))
+DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
