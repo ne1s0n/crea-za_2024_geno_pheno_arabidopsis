@@ -52,6 +52,7 @@ To highlight changes use
 
 * 2024-03-25 - initial report
 * 2024-03-26 - added kinship section
+* 2024-04-30 - added section on experiment 2
 
 # Aim
 Measure standard genomic regression performances on an arbidopsis dataset.
@@ -63,13 +64,13 @@ The code for regressions and report available at: https://github.com/ne1s0n/crea
 * traits: Cauline Leaf number (CL), DaysToFlowering (1, 2, 3), Rosette Leaf number (RL)
 * accessions: (circa) 1000 accessions, already split in train (80%) and test (20%)
 
-# Regressions
+# Regression - experiment 1
 
 * **mode 1 - CROSSVALIDATION** The train set is further split in a 10-folds crossvalidation scheme, and
   always tested on the test set (representing 20% of the full dataset)
 * **mode 2 - FULL** The full train set is used for train (once). The remaining test set is used for validation 
 
-# Results
+## Results
 
 ```{r echo=FALSE, include=TRUE}
 #loading result data
@@ -110,7 +111,7 @@ metrics = setdiff(colnames(res), c('trait', 'regressor'))
 ```
 
 
-## Cauline Leaf number (CL)
+### Cauline Leaf number (CL)
 ```{r echo=FALSE, include=TRUE}
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
@@ -118,7 +119,7 @@ sel = res$trait == 'Cauline Leaf number (CL)'
 DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
-## DaysToFlowering1
+### DaysToFlowering1
 ```{r echo=FALSE, include=TRUE}
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
@@ -126,7 +127,7 @@ sel = res$trait == 'DaysToFlowering1'
 DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
-## DaysToFlowering2
+### DaysToFlowering2
 ```{r echo=FALSE, include=TRUE}
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
@@ -134,7 +135,7 @@ sel = res$trait == 'DaysToFlowering2'
 DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
-## DaysToFlowering3
+### DaysToFlowering3
 ```{r echo=FALSE, include=TRUE}
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
@@ -142,10 +143,52 @@ sel = res$trait == 'DaysToFlowering3'
 DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
 ```
 
-## Rosette Leaf number (RL)
+### Rosette Leaf number (RL)
 ```{r echo=FALSE, include=TRUE}
 #showing the table
 #c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
 sel = res$trait == 'Rosette Leaf number (RL)'
 DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% formatRound(metrics, digits=4)
+```
+
+# Regression experiment 2: hand-picked CV
+
+This experiment was done with the following:
+
+* 10-folds CV (coordinated with the UNIBA group, they provided the list of samples for each fold)
+* only kinship-based regressors: GBLUP and RKHS (Bayesian GBLUP)
+* kinship computed following the [Astle&Balding method](https://www.jstor.org/stable/25681325)
+* the whole process repeated five times for numerical stability, presented results are averaged
+
+```{r echo=FALSE, include=TRUE}
+#loading result data
+res = read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV.csv', stringsAsFactors = FALSE)
+
+#removing info on split
+res$dataset.train = gsub(pattern = ' split.*', replacement = '', x = res$dataset.train)
+
+#averaging over repetitions
+res = ddply(res, .(dataset.train, regressor), function(x){
+  return(data.frame(
+    coeff_det = mean(x$coeff_det),
+    pearson = mean(x$pearson),
+    rmse = mean(x$rmse)
+  ))
+})
+
+
+#screen labeling: trait
+res = col.rename(res, oldname = 'dataset.train', newname = 'trait')
+
+kable(res)
+
+#wide table
+#res = pivot_wider(res, id_cols = c('trait', 'regressor'), names_from = 'mode', values_from = c('pearson', #'rmse', 'coeff_det'))
+
+#separating kinship and SNP regressors
+#kinship_selector = grepl(pattern = 'KIN', res$regressor)
+#res$regressor = gsub(pattern = 'KIN ', replacement = '', res$regressor)
+
+#list of metrics, easier to put it in an array for further formatting
+#metrics = setdiff(colnames(res), c('trait', 'regressor'))
 ```
