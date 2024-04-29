@@ -146,19 +146,19 @@ load_all = function(
   return(res)
 }
 
-load_kinship_705 = function(infolder){
-  infile = file.path(infolder, 'kinship_705.csv.gz')
+load_kinship_703 = function(infolder){
+  infile = file.path(infolder, 'kinship_703.csv.gz')
   return(read.csv(infile, row.names = 1))
 }
 
-load_phenotypes_705 = function(infolder){
+load_phenotypes_703 = function(infolder){
   tmp = load_phenotypes(infolder)
   tmp = rbind(tmp$train, tmp$test)
   tmp$accession_id = paste(sep='', 'accession_', tmp$accession_id)
   return(tmp)
 }
 
-load_splits_705 = function(infolder){
+load_splits_703 = function(infolder){
   res = NULL
   
   #for each available split
@@ -181,7 +181,7 @@ load_splits_705 = function(infolder){
   return(res)
 }
 
-load_all_705 = function(
+load_all_703 = function(
   basefolder = '/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/data', 
   trait = c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
 ){
@@ -193,18 +193,17 @@ load_all_705 = function(
   res$trait = trait
   
   #load data
-  res$phenos = load_phenotypes_705(file.path(basefolder, trait))
-  res$kinship = load_kinship_705(basefolder) 
-  res$splits = load_splits_705(file.path(basefolder, trait))
+  res$phenos = load_phenotypes_703(file.path(basefolder, trait))
+  res$kinship = load_kinship_703(basefolder) 
+  res$splits = load_splits_703(file.path(basefolder, trait))
   
-  #sanity
+  #sanity, subset, same order
   stopifnot(all(res$phenos$accession_id %in% rownames(res$kinship)))
-  stopifnot(all(rownames(res$kinship) %in% res$phenos$accession_id))
+  res$kinship = res$kinship[res$phenos$accession_id, res$phenos$accession_id]
+
+  #sanity2: split contains the same IDs  
   stopifnot(all(rownames(res$kinship) %in% res$split$accession_id))
   stopifnot(all(res$split$accession_id %in% rownames(res$kinship)))
-  
-  #same order
-  res$kinship = res$kinship[res$phenos$accession_id, res$phenos$accession_id]
   
   #done
   return(res)

@@ -44,7 +44,7 @@ get_split_data = function(all_data, split_current){
 # ACTUAL SCRIPT -----------------------------------------------------------
 for (trait in trait_list){
   #loading data from the full SNP dataset
-  all_data = load_all_705(trait = trait)
+  all_data = load_all_703(trait = trait)
   
   #looping over all available splits
   for (split in unique(all_data$splits$split)){
