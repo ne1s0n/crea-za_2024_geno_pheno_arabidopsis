@@ -145,3 +145,41 @@ load_all = function(
   #done
   return(res)
 }
+
+load_kinship_705 = function(infolder){
+  infile = file.path(infolder, 'kinship_705.csv.gz')
+  return(read.csv(infile, row.names = 1))
+}
+
+load_phenotypes_705 = function(infolder){
+  tmp = load_phenotypes(infolder)
+  tmp = rbind(tmp$train, tmp$test)
+  tmp$accession_id = paste(sep='', 'accession_', tmp$accession_id)
+  return(tmp)
+}
+
+load_all_705 = function(
+  basefolder = '/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/data', 
+  trait = c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
+){
+  #check for valid traits
+  trait = match.arg(trait)
+  
+  #room for results
+  res = list()
+  res$trait = trait
+  
+  #load data
+  res$phenos = load_phenotypes_705(file.path(basefolder, trait))
+  res$kinship = load_kinship_705(basefolder) 
+  
+  #sanity
+  stopifnot(all(res$phenos$accession_id %in% rownames(res$kinship)))
+  stopifnot(all(rownames(res$kinship) %in% res$phenos$accession_id))
+  
+  #same order
+  res$kinship = res$kinship[res$phenos$accession_id, res$phenos$accession_id]
+  
+  #done
+  return(res)
+}
