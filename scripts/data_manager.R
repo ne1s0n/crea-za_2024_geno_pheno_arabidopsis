@@ -159,8 +159,26 @@ load_phenotypes_705 = function(infolder){
 }
 
 load_splits_705 = function(infolder){
-  #stub function
-  return(NULL)
+  res = NULL
+  
+  #for each available split
+  for (f in list.files(path = file.path(infolder, 'manual_folds'), pattern = 'index', full.names = TRUE)){
+    #reading the accession IDs
+    ids = paste(sep='', 'accession_', readLines(f))
+    
+    #extracting the split number from the file name
+    split = gsub(pattern = '.*_fold', replacement = '', x = basename(f))
+    split = gsub(pattern = '.txt', replacement = '', x = split)
+    
+    #saving results
+    res = rbind(res, data.frame(
+      accession_id = ids,
+      split = as.integer(split),
+      train = grepl(pattern = 'train', x = f)
+    ))
+  }
+  
+  return(res)
 }
 
 load_all_705 = function(
@@ -182,6 +200,8 @@ load_all_705 = function(
   #sanity
   stopifnot(all(res$phenos$accession_id %in% rownames(res$kinship)))
   stopifnot(all(rownames(res$kinship) %in% res$phenos$accession_id))
+  stopifnot(all(rownames(res$kinship) %in% res$split$accession_id))
+  stopifnot(all(res$split$accession_id %in% rownames(res$kinship)))
   
   #same order
   res$kinship = res$kinship[res$phenos$accession_id, res$phenos$accession_id]
