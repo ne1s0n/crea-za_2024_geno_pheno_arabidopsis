@@ -158,6 +158,11 @@ load_phenotypes_705 = function(infolder){
   return(tmp)
 }
 
+load_splits_705 = function(infolder){
+  #stub function
+  return(NULL)
+}
+
 load_all_705 = function(
   basefolder = '/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/data', 
   trait = c('Cauline Leaf number (CL)', 'DaysToFlowering1', 'DaysToFlowering2', 'DaysToFlowering3', 'Rosette Leaf number (RL)')
@@ -172,6 +177,7 @@ load_all_705 = function(
   #load data
   res$phenos = load_phenotypes_705(file.path(basefolder, trait))
   res$kinship = load_kinship_705(basefolder) 
+  res$splits = load_splits_705(file.path(basefolder, trait))
   
   #sanity
   stopifnot(all(res$phenos$accession_id %in% rownames(res$kinship)))

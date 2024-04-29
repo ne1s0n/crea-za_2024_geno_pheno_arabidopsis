@@ -11,16 +11,12 @@ source(file.path(basefolder, 'scripts', 'data_manager.R'))
 outfolder = file.path(basefolder, 'results2_coordinated_CV')
 dir.create(outfolder, showWarnings = FALSE, recursive = TRUE)
 
-
 for (trait in trait_list){
-  # LOADING DATA AND CV PREP ------------------------------------------------
   #loading data from the full SNP dataset
   all_data = load_all_705(trait = trait)
   
   #we are doing by-hand special fold split 
-  
   stop('here')
-  
 }
 
 
