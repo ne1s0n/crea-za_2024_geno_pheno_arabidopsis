@@ -155,9 +155,9 @@ DT::datatable(res[sel,], rownames = FALSE, options = list(dom = 't')) %>% format
 
 This experiment was done with the following:
 
-* 10-folds CV (coordinated with the UNIBA group, they provided the list of samples for each fold)
+* 10-folds CV covering the whole dataset (coordinated with the UNIBA group, they provided the list of samples for each fold)
 * only kinship-based regressors: GBLUP and RKHS (Bayesian GBLUP)
-* kinship computed following the [Astle&Balding method](https://www.jstor.org/stable/25681325)
+* kinship computed following the [Astle&Balding method](https://www.jstor.org/stable/25681325) using the **full** dataset of half million SNPs
 * the whole process repeated five times for numerical stability, presented results are averaged
 
 ```{r echo=FALSE, include=TRUE}
