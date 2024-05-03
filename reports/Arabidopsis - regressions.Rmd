@@ -160,10 +160,20 @@ This experiment was done with the following:
 * kinship computed following the [Astle&Balding method](https://www.jstor.org/stable/25681325) using the **full** dataset of half million SNPs
 * the whole process repeated five times for numerical stability, presented results are averaged
 
+To this we added another regression, with the following procedure:
+
+* square train-only kinship
+* regression model trained on it (ridge regression)
+* rectangular kinship (test sample rows, train sample columns) for predicting the performance on test set
+* label: rrBLUP-kin
+
 ```{r echo=FALSE, include=TRUE}
 #loading result data
-res = read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV.csv', stringsAsFactors = FALSE)
-
+res = rbind(
+  read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV.csv', stringsAsFactors = FALSE),
+  read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV_kinshipTrainOnly.csv', stringsAsFactors = FALSE)
+)
+  
 #removing info on split
 res$dataset.train = gsub(pattern = ' split.*', replacement = '', x = res$dataset.train)
 
