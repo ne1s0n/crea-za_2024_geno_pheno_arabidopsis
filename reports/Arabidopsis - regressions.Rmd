@@ -53,6 +53,7 @@ To highlight changes use
 * 2024-03-25 - initial report
 * 2024-03-26 - added kinship section
 * 2024-04-30 - added section on experiment 2
+* 2024-05-06 - added section on SNP based rrBLUP
 
 # Aim
 Measure standard genomic regression performances on an arbidopsis dataset.
@@ -160,22 +161,25 @@ This experiment was done with the following:
 * kinship computed following the [Astle&Balding method](https://www.jstor.org/stable/25681325) using the **full** dataset of half million SNPs
 * the whole process repeated five times for numerical stability, presented results are averaged
 
-To this we added another regression, with the following procedure:
+To this we added another regression, on SNP data, using standard ridge regression (rrBLUP):
 
-* square train-only kinship
-* regression model trained on it (ridge regression)
-* rectangular kinship (test sample rows, train sample columns) for predicting the performance on test set
-* label: rrBLUP-kin
+* same hand-picked CV as above
+* model trained only on rectangular SNP matrix from training set, then applied to test set
+* label "SNP rrBLUP"
 
 ```{r echo=FALSE, include=TRUE}
 #loading result data
 res = rbind(
   read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV.csv', stringsAsFactors = FALSE),
-  read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV_kinshipTrainOnly.csv', stringsAsFactors = FALSE)
+#  read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV_kinshipTrainOnly.csv', stringsAsFactors = FALSE),
+  read.csv('/home/nelson/research/crea-za_2024_geno_pheno_arabidopsis/results/accuracy_regression2_coordinated_CV_SNP.csv', stringsAsFactors = FALSE)
 )
   
 #removing info on split
 res$dataset.train = gsub(pattern = ' split.*', replacement = '', x = res$dataset.train)
+
+#display names
+res$regressor = gsub(pattern = '^rrBLUP$', replacement = 'SNP rrBLUP', res$regressor)
 
 #averaging over repetitions
 res = ddply(res, .(dataset.train, regressor), function(x){
